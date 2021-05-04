@@ -1,1 +1,1 @@
-"#AI-project" 
+Depth-first search, Breadth-first search, Uniform-cost search, Best-first search, A* search algorithms using graphs
