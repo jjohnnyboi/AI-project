@@ -2,6 +2,7 @@ import graph
 import bfs
 import ucs
 import dfs
+import gbfps
 import astar
 
 import tkinter as tk
@@ -41,10 +42,16 @@ heuristicValue =  {'Arad': 366, 'Zerind': 374,
          'Giurgiu': 77}
 
 
-# Creating tkinter window
 window = tk.Tk()
-window.geometry('350x250')
 window.title("Search algorithms")
+wX = window.winfo_screenwidth()
+wY = window.winfo_screenheight()
+x = (wX/2) - 175
+y = (wY/2) - 125
+window.geometry('350x250+'+str(x.__round__())+"+"+str(y.__round__()))
+
+
+
 # from select
 ttk.Label(window, text="From:",font=("Times New Roman", 10)).grid(column=1,row=14, padx=15,pady=10)
 n = tk.StringVar()
@@ -63,7 +70,7 @@ tocity.current(12)
 ttk.Label(window, text="Choose an algoirthm:",font=("Times New Roman", 10)).grid(column=1,row=20, padx=15,pady=10)
 n = tk.StringVar()
 algochoice = ttk.Combobox(window, width=15,state="readonly")
-algochoice['values'] = ("BFS", "DFS", "UCS", "A*")
+algochoice['values'] = ("BFS", "DFS", "UCS", "Greedy BFS", "A*")
 algochoice.grid(column=1, row=21, padx=15,pady=10)
 algochoice.current(0)
 
@@ -87,33 +94,32 @@ def compute():
         T.insert(1.0, "You are already in "+fromcity.get())
         T.config(state="disabled")
         return;
+    count = 0;
     if algochoice.get() == "BFS":
         route, cost = bfs.breadthSearch(currentGraph, currentGraph.vertices[fromcity.get()], tocity.get())
     elif algochoice.get() == "DFS":
         route, cost = dfs.depthSearch(currentGraph, currentGraph.vertices[fromcity.get()], tocity.get())
     elif algochoice.get() == "UCS":
-        route, cost = ucs.uniform_cost_search(currentGraph, heuristicValue, fromcity.get(), tocity.get())
+        route, cost, count = ucs.uniform_cost_search(currentGraph, heuristicValue, fromcity.get(), tocity.get())
+    elif algochoice.get() == "Greedy BFS":
+        route, cost = gbfps.greedybfs(currentGraph, currentGraph.vertices[fromcity.get()], tocity.get())
     elif algochoice.get() == "A*":
-        route, cost = astar.astar(currentGraph, heuristicValue, fromcity.get(), tocity.get())
+        route, cost, count = astar.astar(currentGraph, heuristicValue, fromcity.get(), tocity.get())
     text = ""
     for i in route:
         if text == "":
             text += i;
         else:
             text += ", "+i;
-    print(text);
-    print ("The cost is: "+str(cost))
     currentGraph.setitFalse();
     T.config(state="normal")
     T.delete(1.0, "end")
     T.insert(1.0,text)
     costLabel.set("The cost is: "+str(cost))
+    if count != 0:
+        costLabel.set("The cost is: " + str(cost)+ "\nCount: "+str(count))
+
     T.config(state="disabled")
 
 B["command"] = compute;
 window.mainloop()
-
-
-
-
-

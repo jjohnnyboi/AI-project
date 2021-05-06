@@ -13,7 +13,7 @@ def astar(graph, h, start, goal):
         if current.visited == False:
             current.visited = True
             if current.name == goal:
-                return node, cost;
+                return node, cost, count;
             for vertexName, edgeCost in current.neighbors.items():
                 if graph.vertices[vertexName].visited == False:
                     temp = node[:]
