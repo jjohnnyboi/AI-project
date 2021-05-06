@@ -40,3 +40,6 @@ class Graph:
     def print_graph(self):
         for key in sorted(list(self.vertices.keys())):
             print(key + str(self.vertices[key].neighbors))
+    def setitFalse(self):
+        for key in (self.vertices):
+            self.vertices[key].visited = False

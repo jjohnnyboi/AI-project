@@ -1,3 +1,5 @@
+import copy
+
 def breadthSearch(graph, vert, goal):
     q = list()
     searchList = [vert.name]
