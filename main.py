@@ -1,16 +1,40 @@
-# This is a sample Python script.
+import graph
+import bfs
+import dfs
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+g = graph.Graph()
 
+vertices = ['Arad', 'Zerind', 'Timisoara', 'Sibiu', 'Oradea', 'Lugoj', 'RimnicuVilcea',
+            'Mehadia', 'Craiova', 'Pitesti', 'Fagaras', 'Dobreta', 'Bucharest', 'Giurgiu']
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+for i in vertices:
+    g.add_vertex(graph.Vertex(i))
 
+# g.print_graph()
+edges = {
+    'Arad': {'Zerind': 75, 'Sibiu': 140},
+    'Timisoara': {'Arad': 118, 'Lugoj': 111},
+    'Sibiu': {'Oradea': 151, 'Fagaras': 99, 'RimnicuVilcea': 80},
+    'Oradea': {'Zerind': 71, 'Sibiu': 151},
+    'Mehadia': {'Lugoj': 70, 'Dobreta': 75},
+    'Craiova': {'Dobreta': 120, 'RimnicuVilcea': 146, 'Pitesti': 138},
+    'Pitesti': {'RimnicuVilcea': 97, 'Craiova': 138},
+    'Fagaras': {'Bucharest': 211},
+    'Dobreta': {'Craiova': 120},
+    'Bucharest': {'Pitesti': 101, 'Giurgiu': 90}
+}
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+for vertex1, value in edges.items():
+    for vertex2, cost in edges[vertex1].items():
+        g.add_edge(vertex1, vertex2, cost)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+route, cost = bfs.breadthSearch(g, g.vertices["Arad"], 'Bucharest')
+dfs.DFS(g, g.vertices["Arad"], 'Bucharest')
+text = ""
+for i in route:
+    if text == "":
+        text += i;
+    else:
+        text += ", "+i;
+print(text);
+print ("The cost is: "+str(cost))
