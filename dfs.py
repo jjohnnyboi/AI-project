@@ -1,26 +1,26 @@
-def DFSUtil(graph, v, visited, end):
-    # Mark the current node as visited
-    # and print it
-    visited[v] = True
-    print(v, end=' ')
-    if (v == end):
-        return;
-    # Recur for all the vertices
-    # adjacent to this vertex
-    for i in graph.graph[v]:
-        if visited[i] == False:
-            if i == end:
-                print(v, end=' ')
-                return
-            graph.DFSUtil(i, visited)
+def depthSearch(graph, start, goal):
+    stack = list()
+    searchList = [start.name]
+    start.visited = True
+    # Add neighbours of start vertex to queue
+    stack.append(start.name)
+    cost = 0;
 
-        # The function to do DFS traversal. It uses
+    while (len(stack)):
+
+        s = stack.pop()
+        if s == goal:
+            break
+
+        node_u = graph.vertices[s]
+        node_u.visited = True
 
 
-# recursive DFSUtil()
-def DFS(graph, v, end):
-    # Mark all the vertices as not visited
-    visited = graph
-    # Call the recursive helper function
-    # to print DFS traversal
-    DFSUtil(graph, v, visited, end)
+        for i in node_u.neighbors:
+            node_v = graph.vertices[i]
+
+            if node_v.visited == False and i not in searchList:
+                cost += node_u.neighbors[i]
+                stack.append(i)
+                searchList.append(i)
+    return searchList, cost

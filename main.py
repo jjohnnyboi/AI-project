@@ -1,15 +1,13 @@
 import graph
 import bfs
 import ucs
-import copy
-'''from tkinter import *
+import dfs
+import astar
 
-window = Tk()
-window.geometry("400x300")
+import tkinter as tk
+from tkinter import ttk
 
-window.title("Search algorithms app")
 
-window.mainloop()'''
 def getGraph():
     g = graph.Graph()
 
@@ -43,26 +41,60 @@ heuristicValue =  {'Arad': 366, 'Zerind': 374,
          'Giurgiu': 77}
 
 
+# Creating tkinter window
+window = tk.Tk()
+window.geometry('350x250')
+window.title("Search algorithms")
+# from select
+ttk.Label(window, text="From:",font=("Times New Roman", 10)).grid(column=1,row=14, padx=15,pady=10)
+n = tk.StringVar()
+fromcity = ttk.Combobox(window, width=15,state="readonly")
+fromcity['values'] = ('Arad', 'Zerind', 'Timisoara', 'Sibiu', 'Oradea', 'Lugoj', 'RimnicuVilcea','Mehadia', 'Craiova', 'Pitesti', 'Fagaras', 'Dobreta', 'Bucharest', 'Giurgiu')
+fromcity.grid(column=1, row=15, padx=15,pady=10)
+fromcity.current(0)
+# to select
+ttk.Label(window, text="to:",font=("Times New Roman", 10)).grid(column=2,row=14, padx=15,pady=10)
+n = tk.StringVar()
+tocity = ttk.Combobox(window, width=15,state="readonly")
+tocity['values'] = ('Arad', 'Zerind', 'Timisoara', 'Sibiu', 'Oradea', 'Lugoj', 'RimnicuVilcea','Mehadia', 'Craiova', 'Pitesti', 'Fagaras', 'Dobreta', 'Bucharest', 'Giurgiu')
+tocity.grid(column=2, row=15, padx=15,pady=10)
+tocity.current(12)
+# algo select
+ttk.Label(window, text="Choose an algoirthm:",font=("Times New Roman", 10)).grid(column=1,row=20, padx=15,pady=10)
+n = tk.StringVar()
+algochoice = ttk.Combobox(window, width=15,state="readonly")
+algochoice['values'] = ("BFS", "DFS", "UCS", "A*")
+algochoice.grid(column=1, row=21, padx=15,pady=10)
+algochoice.current(0)
 
 
-while True:
-    print("----------------------------------------------")
-    print("----------------------------------------------")
-    print("Choose an algorithim")
-    print("1- BFS")
-    print("2- UCS")
-    print("3- A*")
-    print("----------------------------------------------")
-    print("----------------------------------------------")
-    algoChoice = input("");
+B = ttk.Button(window, text ="Run search", width=20)
+B.grid(column=1, row=22)
+
+ttk.Label(window, text="Route taken:",font=("Times New Roman", 10)).grid(column=2,row=20, padx=15,pady=10)
+T = tk.Text(window, height = 4, width = 22,state="disabled")
+T.configure(font=("Times New Roman", 12))
+T.grid(column=2, row=21)
+costLabel = tk.StringVar()
+costLabel.set("The cost is: ")
+ttk.Label(window, textvariable=costLabel,font=("Times New Roman", 10)).grid(column=2,row=22, padx=15,pady=10)
+
+def compute():
     currentGraph = getGraph();
-    if (int(algoChoice) == 1):
-        route, cost = bfs.breadthSearch(currentGraph, currentGraph.vertices["Arad"], 'Bucharest')
-    elif (int(algoChoice) == 2):
-        route, cost = ucs.uniform_cost_search(currentGraph, heuristicValue, 'Arad', "Bucharest")
-    elif (int(algoChoice) == 3):
-        route, cost = ucs.uniform_cost_search(currentGraph, heuristicValue, 'Arad', "Bucharest")
-
+    if (fromcity.get() == tocity.get()):
+        T.config(state="normal")
+        T.delete(1.0, "end")
+        T.insert(1.0, "You are already in "+fromcity.get())
+        T.config(state="disabled")
+        return;
+    if algochoice.get() == "BFS":
+        route, cost = bfs.breadthSearch(currentGraph, currentGraph.vertices[fromcity.get()], tocity.get())
+    elif algochoice.get() == "DFS":
+        route, cost = dfs.depthSearch(currentGraph, currentGraph.vertices[fromcity.get()], tocity.get())
+    elif algochoice.get() == "UCS":
+        route, cost = ucs.uniform_cost_search(currentGraph, heuristicValue, fromcity.get(), tocity.get())
+    elif algochoice.get() == "A*":
+        route, cost = astar.astar(currentGraph, heuristicValue, fromcity.get(), tocity.get())
     text = ""
     for i in route:
         if text == "":
@@ -71,7 +103,17 @@ while True:
             text += ", "+i;
     print(text);
     print ("The cost is: "+str(cost))
-    val = input("Do you want to use another algoirthm(Y/N)")
-    if (val == "y"):
-        currentGraph.setitFalse();
+    currentGraph.setitFalse();
+    T.config(state="normal")
+    T.delete(1.0, "end")
+    T.insert(1.0,text)
+    costLabel.set("The cost is: "+str(cost))
+    T.config(state="disabled")
+
+B["command"] = compute;
+window.mainloop()
+
+
+
+
 
